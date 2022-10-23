@@ -14,6 +14,14 @@ concurrency:
 
 jobs:
   docker:
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          - name: base
+            version: 1.0.0
+          - name: cpp
+            version: 1.0.0
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,12 +37,12 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: cpp/.devcontainer
-          file: cpp/.devcontainer/base.Dockerfile
+          context: ${{ matrix.name }}/.devcontainer
+          file: ${{ matrix.name }}/.devcontainer/base.Dockerfile
           platforms: linux/amd64
           push: ${{ github.ref_protected }}
           tags: |
-            ghcr.io/slaier/dev-cpp:latest
-            ghcr.io/slaier/dev-cpp:1.0.0
+            ghcr.io/slaier/dev-${{ matrix.name }}:latest
+            ghcr.io/slaier/dev-${{ matrix.name }}:${{ matrix.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

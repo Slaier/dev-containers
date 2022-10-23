@@ -1,6 +1,5 @@
-FROM fedora:latest
+FROM ghcr.io/slaier/dev-base:latest
 
-RUN dnf install -y git bash-completion \
-    make ninja-build cmake clang clang-tools-extra \
+RUN dnf install -y make ninja-build cmake clang clang-tools-extra \
     && dnf clean all \
     && rm -rf /var/cache/yum
