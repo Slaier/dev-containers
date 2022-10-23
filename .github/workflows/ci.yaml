@@ -6,7 +6,7 @@ on:
       - "main"
       - "develop"
     paths:
-      - "**/Dockerfile"
+      - "**/base.Dockerfile"
 
 concurrency:
   group: ${{ github.head_ref || github.ref_name }}
@@ -30,8 +30,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: cpp/.devcontainer
+          file: cpp/.devcontainer/base.Dockerfile
           platforms: linux/amd64
-          push: true
+          push: ${{ github.ref_protected }}
           tags: |
             ghcr.io/slaier/dev-cpp:latest
             ghcr.io/slaier/dev-cpp:1.0.0
