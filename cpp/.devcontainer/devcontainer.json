@@ -8,7 +8,8 @@
 		// Configure properties specific to VS Code.
 		"vscode": {
 			"settings": {
-				"editor.inlayHints.enabled": "off"
+				"editor.inlayHints.enabled": "off",
+				"makefile.compileCommandsPath": "compile_commands.json"
 			},
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
