@@ -1,4 +1,4 @@
-FROM ghcr.io/slaier/dev-base:latest
+FROM ghcr.io/slaier/dev-base:1.0.0
 
 RUN dnf install -y nodejs \
     && dnf clean all \

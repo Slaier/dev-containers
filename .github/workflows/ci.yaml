@@ -15,7 +15,6 @@ concurrency:
 jobs:
   docker:
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - name: base
