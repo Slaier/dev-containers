@@ -12,9 +12,12 @@
 			},
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
+				"Tyriar.sort-lines",
+				"eamodio.gitlens",
 				"guyutongxue.cpp-reference",
 				"llvm-vs-code-extensions.vscode-clangd",
-				"ms-vscode.cmake-tools"
+				"ms-vscode.cmake-tools",
+				"ms-vscode.makefile-tools"
 			]
 		}
 	}
