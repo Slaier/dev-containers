@@ -19,6 +19,8 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     - name: Login to GitHub Container Registry
@@ -53,9 +55,9 @@ runs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
+        platforms: linux/amd64,linux/arm64
         context: ${{ inputs.context }}
         file: ${{ inputs.file }}
-        platforms: linux/amd64
         push: ${{ github.ref_protected }}
         tags: |
           ghcr.io/slaier/${{ inputs.name }}:latest
