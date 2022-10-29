@@ -1,8 +1,10 @@
-FROM docker.io/library/fedora:36
+FROM docker.io/library/alpine:latest
 
-RUN dnf install -y openfortivpn 3proxy \
-    && dnf clean all \
-    && rm -rf /var/cache/yum
+RUN apk add --no-cache \
+    3proxy \
+    openfortivpn \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main
 
 COPY entrypoint.sh /
 

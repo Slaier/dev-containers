@@ -9,10 +9,12 @@ inputs:
     required: true
   context:
     description: "context"
-    required: true
+    default: .
+    required: false
   file:
     description: "file"
-    required: true
+    default: ./Dockerfile
+    required: false
   GITHUB_TOKEN:
     description: "github token"
     required: true
@@ -42,15 +44,11 @@ runs:
     - name: Import Cache
       id: import_cache
       run: |
-        if [[ "${{ steps.cache.outputs.cache-hit}}" == "true" ]]; then
-          echo "cache_from=type=local,src=/tmp/buildx_cache" >> $GITHUB_OUTPUT
-        else
-          if [[ -e /tmp/buildx_cache/index.json ]]; then
-            mv /tmp/buildx_cache /tmp/buildx_cache_partial
-            echo "cache_from=type=local,src=/tmp/buildx_cache_partial" >> $GITHUB_OUTPUT
-          fi
-          echo "cache_to=type=local,mode=max,dest=/tmp/buildx_cache,compression=uncompressed" >> $GITHUB_OUTPUT
+        if [[ -e /tmp/buildx_cache/index.json ]]; then
+          mv /tmp/buildx_cache /tmp/buildx_cache_partial
+          echo "cache_from=type=local,src=/tmp/buildx_cache_partial" >> $GITHUB_OUTPUT
         fi
+        echo "cache_to=type=local,mode=max,dest=/tmp/buildx_cache,compression=uncompressed" >> $GITHUB_OUTPUT
       shell: bash
     - name: Build and push
       uses: docker/build-push-action@v3

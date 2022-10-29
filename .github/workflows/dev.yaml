@@ -11,29 +11,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  base:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Build and push
-        uses: ./.github/workflows/build
-        with:
-          name: dev-base
-          version: 1.0.0
-          context: base/.devcontainer
-          file: base/.devcontainer/base.Dockerfile
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dev:
     strategy:
       matrix:
         include:
           - name: cpp
-            version: 1.0.0
+            version: 1.1.0
           - name: nodejs
-            version: 1.0.0
+            version: 1.1.0
     runs-on: ubuntu-latest
-    needs: base
     steps:
       - name: Checkout
         uses: actions/checkout@v3

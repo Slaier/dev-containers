@@ -1,8 +1,7 @@
-FROM ghcr.io/slaier/dev-base:1.0.0
+FROM docker.io/library/alpine:latest
 
-RUN dnf install -y nodejs \
-    && dnf clean all \
-    && rm -rf /var/cache/yum
+RUN apk add --no-cache \
+    git bash fish nodejs-current
 
-RUN corepack enable \
-    && pnpm install -g nrm
+RUN corepack enable && \
+    yarn global add nrm --prefix /usr/local

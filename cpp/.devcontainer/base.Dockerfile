@@ -1,5 +1,4 @@
-FROM ghcr.io/slaier/dev-base:1.0.0
+FROM docker.io/library/alpine:latest
 
-RUN dnf install -y make ninja-build cmake clang clang-tools-extra \
-    && dnf clean all \
-    && rm -rf /var/cache/yum
+RUN apk add --no-cache \
+    git bash fish make samurai cmake clang clang-extra-tools
