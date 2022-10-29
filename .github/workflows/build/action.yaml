@@ -1,4 +1,3 @@
-
 name: Build and Push
 description: "build and push docker image to ghcr"
 inputs:
@@ -28,6 +27,29 @@ runs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ inputs.GITHUB_TOKEN }}
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      id: cache
+      with:
+        path: /tmp/buildx_cache
+        key: buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}
+        restore-keys: |
+          buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}
+          buildx-${{ inputs.name }}-${{ inputs.version }}-
+          buildx-${{ inputs.name }}-
+    - name: Import Cache
+      id: import_cache
+      run: |
+        if [[ "${{ steps.cache.outputs.cache-hit}}" == "true" ]]; then
+          echo "cache_from=type=local,src=/tmp/buildx_cache" >> $GITHUB_OUTPUT
+        else
+          if [[ -e /tmp/buildx_cache/index.json ]]; then
+            mv /tmp/buildx_cache /tmp/buildx_cache_partial
+            echo "cache_from=type=local,src=/tmp/buildx_cache_partial" >> $GITHUB_OUTPUT
+          fi
+          echo "cache_to=type=local,mode=max,dest=/tmp/buildx_cache,compression=uncompressed" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
@@ -38,5 +60,5 @@ runs:
         tags: |
           ghcr.io/slaier/${{ inputs.name }}:latest
           ghcr.io/slaier/${{ inputs.name }}:${{ inputs.version }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: ${{ steps.import_cache.outputs.cache_from }}
+        cache-to: ${{ steps.import_cache.outputs.cache_to }}
