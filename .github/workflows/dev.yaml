@@ -11,7 +11,7 @@ on:
       - ".github/workflows/build/action.yaml"
 
 concurrency:
-  group: ${{ github.head_ref || github.ref_name }}
+  group: dev-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
