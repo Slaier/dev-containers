@@ -1,4 +1,4 @@
-name: ci
+name: dev
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
       - "develop"
     paths:
       - "**/base.Dockerfile"
-      - ".github/workflows/*"
+      - ".github/workflows/dev.yaml"
+      - ".github/workflows/build/action.yaml"
 
 concurrency:
   group: ${{ github.head_ref || github.ref_name }}
@@ -22,8 +23,10 @@ jobs:
       - name: Build and push
         uses: ./.github/workflows/build
         with:
-          name: base
+          name: dev-base
           version: 1.0.0
+          context: base/.devcontainer
+          file: base/.devcontainer/base.Dockerfile
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dev:
     strategy:
@@ -41,6 +44,8 @@ jobs:
       - name: Build and push
         uses: ./.github/workflows/build
         with:
-          name: ${{ matrix.name }}
+          name: dev-${{ matrix.name }}
           version: ${{ matrix.version }}
+          context: ${{ matrix.name }}/.devcontainer
+          file: ${{ matrix.name }}/.devcontainer/base.Dockerfile
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

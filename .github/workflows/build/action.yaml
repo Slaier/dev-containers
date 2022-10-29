@@ -8,6 +8,12 @@ inputs:
   version:
     description: "image version"
     required: true
+  context:
+    description: "context"
+    required: true
+  file:
+    description: "file"
+    required: true
   GITHUB_TOKEN:
     description: "github token"
     required: true
@@ -25,13 +31,12 @@ runs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
-        context: ${{ inputs.name }}/.devcontainer
-        file: ${{ inputs.name }}/.devcontainer/base.Dockerfile
+        context: ${{ inputs.context }}
+        file: ${{ inputs.file }}
         platforms: linux/amd64
         push: ${{ github.ref_protected }}
         tags: |
-          ghcr.io/slaier/dev-${{ inputs.name }}:latest
-          ghcr.io/slaier/dev-${{ inputs.name }}:${{ inputs.version }}
+          ghcr.io/slaier/${{ inputs.name }}:latest
+          ghcr.io/slaier/${{ inputs.name }}:${{ inputs.version }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        github-token: ${{ inputs.GITHUB_TOKEN }}
