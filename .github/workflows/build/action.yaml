@@ -34,7 +34,7 @@ runs:
       id: cache
       with:
         path: /tmp/buildx_cache
-        key: buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}
+        key: buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}-${{ github.run_id }}
         restore-keys: |
           buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}
           buildx-${{ inputs.name }}-${{ inputs.version }}-
