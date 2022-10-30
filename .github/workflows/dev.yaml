@@ -28,6 +28,6 @@ jobs:
         with:
           name: dev-${{ matrix.name }}
           version: ${{ matrix.version }}
-          context: ${{ matrix.name }}/.devcontainer
-          file: ${{ matrix.name }}/.devcontainer/base.Dockerfile
+          context: ${{ matrix.name }}
+          file: ${{ matrix.name }}/Dockerfile
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
