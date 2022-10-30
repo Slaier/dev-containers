@@ -52,13 +52,23 @@ runs:
       shell: bash
     - name: Build and push
       uses: docker/build-push-action@v3
+      id: build
       with:
         platforms: linux/amd64,linux/arm64
         context: ${{ inputs.context }}
         file: ${{ inputs.file }}
-        push: ${{ github.ref_protected }}
+        outputs: type=image,push=${{ github.ref_protected }}
         tags: |
           ghcr.io/slaier/${{ inputs.name }}:latest
           ghcr.io/slaier/${{ inputs.name }}:${{ inputs.version }}
         cache-from: ${{ steps.import_cache.outputs.cache_from }}
         cache-to: ${{ steps.import_cache.outputs.cache_to }}
+    - name: Check Cache Hit
+      run: |
+        echo "${{ steps.build.outputs.digest }}" > /tmp/buildx_cache/digest
+        if [[ -e /tmp/buildx_cache_partial/digest ]]; then
+          if diff /tmp/buildx_cache/digest /tmp/buildx_cache_partial/digest; then
+            rm -rf /tmp/buildx_cache
+          fi
+        fi
+      shell: bash

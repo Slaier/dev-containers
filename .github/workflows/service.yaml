@@ -2,9 +2,7 @@ name: service
 
 on:
   push:
-    branches:
-      - "main"
-      - "develop"
+  workflow_dispatch:
 
 concurrency:
   group: service-${{ github.head_ref || github.ref_name }}
