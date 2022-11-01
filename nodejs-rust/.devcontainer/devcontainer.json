@@ -1,0 +1,23 @@
+{
+	"name": "NODEJS_RUST",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {
+				"editor.inlayHints.enabled": "off"
+			},
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"Tyriar.sort-lines",
+				"eamodio.gitlens",
+				"rust-lang.rust-analyzer",
+				"shardulm94.trailing-spaces",
+				"vadimcn.vscode-lldb"
+			]
+		}
+	}
+}
