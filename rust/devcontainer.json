@@ -1,8 +1,17 @@
 {
 	"name": "RUST",
+	"initializeCommand": [
+		"podman",
+		"build",
+		"--network=host",
+		".devcontainer"
+	],
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
+	"runArgs": [
+		"--network=host"
+	],
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.

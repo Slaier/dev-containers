@@ -4,17 +4,13 @@ inputs:
   name:
     description: "image name"
     required: true
-  version:
-    description: "image version"
-    required: true
-  context:
-    description: "context"
-    default: .
+  platforms:
+    description: "List of target platforms for build"
     required: false
-  file:
-    description: "file"
-    default: ./Dockerfile
+  push:
+    description: "Push is a shorthand for --output=type=registry"
     required: false
+    default: 'false'
   GITHUB_TOKEN:
     description: "github token"
     required: true
@@ -22,53 +18,21 @@ runs:
   using: composite
   steps:
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ inputs.GITHUB_TOKEN }}
-    - name: Cache Docker layers
-      uses: actions/cache@v3
-      id: cache
-      with:
-        path: /tmp/buildx_cache
-        key: buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}-${{ github.run_id }}
-        restore-keys: |
-          buildx-${{ inputs.name }}-${{ inputs.version }}-${{ hashFiles(inputs.file) }}
-          buildx-${{ inputs.name }}-${{ inputs.version }}-
-          buildx-${{ inputs.name }}-
-    - name: Import Cache
-      id: import_cache
-      run: |
-        if [[ -e /tmp/buildx_cache/index.json ]]; then
-          mv /tmp/buildx_cache /tmp/buildx_cache_partial
-          echo "cache_from=type=local,src=/tmp/buildx_cache_partial" >> $GITHUB_OUTPUT
-        fi
-        echo "cache_to=type=local,mode=max,dest=/tmp/buildx_cache,compression=uncompressed" >> $GITHUB_OUTPUT
-      shell: bash
     - name: Build and push
-      uses: docker/build-push-action@v3
-      id: build
+      uses: docker/build-push-action@v5
       with:
-        platforms: linux/amd64,linux/arm64
-        context: ${{ inputs.context }}
-        file: ${{ inputs.file }}
-        outputs: type=image,push=${{ github.ref_protected }}
-        tags: |
-          ghcr.io/slaier/${{ inputs.name }}:latest
-          ghcr.io/slaier/${{ inputs.name }}:${{ inputs.version }}
-        cache-from: ${{ steps.import_cache.outputs.cache_from }}
-        cache-to: ${{ steps.import_cache.outputs.cache_to }}
-    - name: Check Cache Hit
-      run: |
-        echo "${{ steps.build.outputs.digest }}" > /tmp/buildx_cache/digest
-        if [[ -e /tmp/buildx_cache_partial/digest ]]; then
-          if diff /tmp/buildx_cache/digest /tmp/buildx_cache_partial/digest; then
-            rm -rf /tmp/buildx_cache
-          fi
-        fi
-      shell: bash
+        context: "{{defaultContext}}:${{ inputs.name }}"
+        platforms: ${{ inputs.platforms }}
+        push: ${{ inputs.push == 'true' }}
+        tags: ghcr.io/slaier/${{ inputs.name }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

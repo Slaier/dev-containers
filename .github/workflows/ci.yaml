@@ -1,0 +1,42 @@
+name: Build and Push
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: dev-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    strategy:
+      matrix:
+        name: [cpp, nodejs, rust]
+        include:
+          - name: openfortivpn
+            platforms: linux/arm64
+            push: true
+    name: ${{ format('Build {0}', matrix.name) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            src:
+              - '${{ matrix.name }}/Dockerfile'
+              - '.github/workflows/**'
+      - name: Build and push
+        if: steps.changes.outputs.src == 'true'
+        uses: ./.github/workflows/build
+        with:
+          name: ${{ matrix.name }}
+          platforms: ${{ matrix.platforms }}
+          push: ${{ matrix.push }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
