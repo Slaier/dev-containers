@@ -1,0 +1,37 @@
+{
+	"name": "PYTHON",
+	"initializeCommand": [
+		"podman",
+		"build",
+		"--network=host",
+		".devcontainer"
+	],
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"runArgs": [
+		"--network=host",
+		"--device=/dev/kfd",
+		"--device=/dev/dri",
+		"--ipc=host",
+		"--group-add=video"
+	],
+	"capAdd": [
+		"SYS_PTRACE"
+	],
+	"securityOpt": [
+		"seccomp=unconfined"
+	],
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {},
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance"
+			]
+		}
+	}
+}

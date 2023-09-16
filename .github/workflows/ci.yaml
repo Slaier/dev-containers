@@ -15,7 +15,7 @@ jobs:
   ci:
     strategy:
       matrix:
-        name: [cpp, nodejs, rust]
+        name: [cpp, nodejs, python, rust]
         include:
           - name: openfortivpn
             platforms: linux/arm64
