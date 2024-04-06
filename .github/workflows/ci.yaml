@@ -16,10 +16,6 @@ jobs:
     strategy:
       matrix:
         name: [cpp, nodejs, python, rust]
-        include:
-          - name: openfortivpn
-            platforms: linux/arm64
-            push: true
     name: ${{ format('Build {0}', matrix.name) }}
     runs-on: ubuntu-latest
     steps:
