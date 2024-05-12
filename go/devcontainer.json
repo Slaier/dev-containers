@@ -1,0 +1,22 @@
+{
+    "name": "go",
+    "initializeCommand": [
+        "podman",
+        "build",
+        "--network=host",
+        ".devcontainer"
+    ],
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "runArgs": [
+        "--network=host"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "golang.go"
+            ]
+        }
+    }
+}

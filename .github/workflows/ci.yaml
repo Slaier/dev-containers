@@ -15,7 +15,7 @@ jobs:
   ci:
     strategy:
       matrix:
-        name: [cpp, nodejs, python, rust]
+        name: [cpp, go, nodejs, python, rust]
     name: ${{ format('Build {0}', matrix.name) }}
     runs-on: ubuntu-latest
     steps:
