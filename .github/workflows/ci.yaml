@@ -35,4 +35,4 @@ jobs:
           name: ${{ matrix.name }}
           platforms: ${{ matrix.platforms }}
           push: ${{ matrix.push }}
-          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GITHUB_TOKEN: ${{ matrix.push == 'true' && secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
