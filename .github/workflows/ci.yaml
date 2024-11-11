@@ -16,23 +16,39 @@ jobs:
     strategy:
       matrix:
         name: [cpp, go, nodejs, python, rust]
+        version: [1]
     name: ${{ format('Build {0}', matrix.name) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Check workflows version
+        id: check-workflows
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .github
+          key: ${{ matrix.name }}-v${{ matrix.version }}
+          lookup-only: true
       - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
             src:
               - '${{ matrix.name }}/Dockerfile'
-              - '.github/workflows/**'
       - name: Build and push
-        if: steps.changes.outputs.src == 'true'
+        if: steps.changes.outputs.src == 'true' || steps.check-workflows.outputs.cache-hit != 'true'
         uses: ./.github/workflows/build
         with:
           name: ${{ matrix.name }}
           platforms: ${{ matrix.platforms }}
           push: ${{ matrix.push }}
           GITHUB_TOKEN: ${{ matrix.push == 'true' && secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
+      - name: Save workflows version
+        id: save-workflows
+        if: steps.check-workflows.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .github
+          key: ${{ steps.check-workflows.outputs.cache-primary-key }}
