@@ -8,7 +8,7 @@ ARG REPO=hzyitc/openwrt-redmi-ax3000
 ARG REF=ipq50xx-qsdk-kernel-5.4-openwrt-21.02-qsdk-11.5.05.841.1029
 
 RUN apt-get update && apt-get install -y coccinelle \
-    sudo build-essential clang flex g++ gawk gcc-multilib gettext git \
+    sudo build-essential ccache clang flex g++ gawk gcc-multilib gettext git \
     libncurses5-dev libssl-dev python3-distutils rsync wget unzip zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -36,6 +36,3 @@ RUN mkdir -p dl && \
     wget -qO- https://github.com/$REPO/releases/download/ci-$REF-20240727-173350-UTC/dl.tar | tar xf - -C dl
 
 RUN make -j16 download
-RUN make -j$(nproc) tools/install
-RUN make -j$(nproc) toolchain/install
-RUN make -j$(nproc) IGNORE_ERRORS=1
